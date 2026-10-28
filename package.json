@@ -1,6 +1,6 @@
 {
   "name": "verifex-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "mcpName": "dev.verifex/screening",
   "description": "MCP server for Verifex sanctions screening: screen a person or company, read a past screening, get its Evidence Capsule.",
   "type": "module",

@@ -9,7 +9,7 @@ import { flattenStoredScreening, renderFailure, renderSummary, safe, STRAY_VARIA
 // Removed from a screened name before sending: they change nothing a person can see.
 const SOFT_MARKS = /[\u00AD\u200E\u200F]/g;
 
-export const SERVER_INFO = { name: "verifex-screening", title: "Verifex sanctions screening", version: "0.1.1" };
+export const SERVER_INFO = { name: "verifex-screening", title: "Verifex sanctions screening", version: "0.1.2" };
 const PROTOCOL_VERSIONS = ["2025-06-18", "2025-03-26", "2024-11-05"];
 const MAX_RESULT_CHARS = 100_000;
 const MAX_RESPONSE_BYTES = 2 * 1024 * 1024;

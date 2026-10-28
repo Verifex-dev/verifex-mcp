@@ -43,7 +43,7 @@ Settings → Developer → Edit Config, then add:
   "mcpServers": {
     "verifex": {
       "command": "npx",
-      "args": ["-y", "verifex-mcp@0.1.1"],
+      "args": ["-y", "verifex-mcp@0.1.2"],
       "env": { "VERIFEX_API_KEY": "<your Verifex API key>" }
     }
   }
@@ -56,7 +56,7 @@ Restart Claude Desktop. You can also install the `verifex-mcp.mcpb` bundle from 
 ### Claude Code
 
 ```bash
-claude mcp add verifex --env VERIFEX_API_KEY=<your Verifex API key> -- npx -y verifex-mcp@0.1.1
+claude mcp add verifex --env VERIFEX_API_KEY=<your Verifex API key> -- npx -y verifex-mcp@0.1.2
 ```
 
 ### Cursor, Windsurf and other clients
@@ -74,7 +74,7 @@ settings (Cursor: `~/.cursor/mcp.json`).
   "servers": {
     "verifex": {
       "command": "npx",
-      "args": ["-y", "verifex-mcp@0.1.1"],
+      "args": ["-y", "verifex-mcp@0.1.2"],
       "env": { "VERIFEX_API_KEY": "${input:verifex-key}" }
     }
   }
@@ -88,7 +88,7 @@ settings (Cursor: `~/.cursor/mcp.json`).
 | `VERIFEX_ALLOW_CUSTOM_API_URL` | no | `1` allows a non-Verifex `VERIFEX_API_URL`, for example your own proxy. Leave unset otherwise. |
 | `VERIFEX_MCP_MAX_SCREENS_PER_10_MIN` | no | Screenings this server will make in any 10 minutes (default 20, at most 500). It stops a runaway assistant from spending your quota. |
 
-**Pin the version** (`verifex-mcp@0.1.1`, as above) so a new release never runs on your machine
+**Pin the version** (`verifex-mcp@0.1.2`, as above) so a new release never runs on your machine
 until you choose to update. Releases are listed on the
 [releases page](https://github.com/Verifex-dev/verifex-mcp/releases).
 
