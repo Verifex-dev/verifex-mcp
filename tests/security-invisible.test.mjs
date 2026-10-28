@@ -55,8 +55,8 @@ test("the full-result JSON carries no raw separator, bidi or tag character, and 
   } finally { await api.close(); }
 });
 
-test("the key is redacted in any letter case, in base64, as a cut prefix, and any other vfx_ key", async () => {
-  const variants = [SECRET.toUpperCase(), Buffer.from(SECRET).toString("base64"), SECRET.slice(0, 10), "vfx_otherkey_abcdef"];
+test("the key is redacted in any letter case, in base64, and any other full-length vfx_ key", async () => {
+  const variants = [SECRET.toUpperCase(), Buffer.from(SECRET).toString("base64"), `vfx_${"a1".repeat(32)}`];
   for (const v of variants) {
     const api = await serve((_req, res) => { res.writeHead(400, { "content-type": "application/json" }); res.end(JSON.stringify({ error: `bad ${v}` })); });
     try {
@@ -89,4 +89,43 @@ test("after an oversized line, the next message still gets its own reply", async
   const msgs = out.trim().split("\n").map((l) => JSON.parse(l));
   assert.deepEqual(msgs.map((m) => m.id ?? null), [null, 3]);
   assert.deepEqual(msgs[1].result, {});
+});
+
+
+// ── Third review: over-redaction, variation-selector smuggling, other invisible fillers ─────
+
+test("ordinary names that contain vfx_ are not altered by key redaction", async () => {
+  const body = { ...complete, query: { name: "VFX_Holdings Ltd" }, verdict: "possible_match", total_matches: 1, matches: [{ name: "vfx_test entity", source: "OFAC" }], decision_hash: "sha256:vfx_abcd" };
+  const api = await serve((_req, res) => { res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify(body)); });
+  try {
+    const out = await call(base(api.url), "screen_name", { name: "VFX_Holdings Ltd" });
+    assert.equal(out.result.structuredContent.result.query.name, "VFX_Holdings Ltd");
+    assert.equal(out.result.structuredContent.result.matches[0].name, "vfx_test entity");
+    assert.equal(out.result.structuredContent.result.decision_hash, "sha256:vfx_abcd");
+  } finally { await api.close(); }
+});
+
+test("a run of variation selectors is hidden data: removed from display and refused as input", () => {
+  const hidden = "A" + cp(...Array.from({ length: 30 }, (_, i) => 0xfe00 + (i % 16))) + cp(0xe0100, 0xe0101, 0xe0102);
+  const t = renderSummary({ ...complete, query: { name: hidden } }).text;
+  assert.ok(!/[\uFE00-\uFE0F]/u.test(t) && !t.includes(cp(0xe0100)));
+  assert.match(validateArgs(tool("screen_name"), { name: hidden }) ?? "", /wrong format/);
+  // One variation selector after a character is legitimate (ideographic variation sequences in Japanese names).
+  assert.equal(validateArgs(tool("screen_name"), { name: `渡${cp(0xe0100)}辺` }), null);
+});
+
+test("other characters that render as nothing are removed and refused", () => {
+  for (const point of [0x034f, 0x115f, 0x1160, 0x3164, 0xffa0, 0xfff9, 0x2800, 0x1d173, 0x1bca0]) {
+    const name = `Ivan${cp(point)}Petrov`;
+    assert.ok(!renderSummary({ ...complete, query: { name } }).text.includes(cp(point)), `display U+${point.toString(16)}`);
+    assert.match(validateArgs(tool("screen_name"), { name }) ?? "", /wrong format/, `input U+${point.toString(16)}`);
+  }
+});
+
+test("direction marks and soft hyphens from copied names are removed, not refused", async () => {
+  const { buildRequest } = await import("../src/server.mjs");
+  const name = `${cp(0x200f)}محمد${cp(0x00ad)} علی${cp(0x200e)}`;
+  assert.equal(validateArgs(tool("screen_name"), { name }), null);
+  const { init } = buildRequest(tool("screen_name"), { name }, base("https://api.verifex.dev"));
+  assert.equal(JSON.parse(init.body).name, "محمد علی");
 });

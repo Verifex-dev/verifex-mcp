@@ -2,9 +2,12 @@ name: release
 # Publishes a tagged version to npm with provenance (npm trusted publishing: OIDC, no token
 # stored anywhere), then attaches the .mcpb bundle with a signed build attestation.
 #
-# Guarded outside this file (owner settings): the `npm` environment requires the owner's
-# approval and allows only v* tags; main and v* tags are protected by rulesets; npm accepts
-# publishes for this package only from this workflow in that environment.
+# Must also be guarded OUTSIDE this file, in owner settings that this workflow cannot check:
+#   - GitHub environment `npm`: owner as required reviewer, deployments only from v* tags;
+#   - rulesets protecting main and v* tags;
+#   - npm trusted publisher bound to this workflow and the `npm` environment, with publishing
+#     set to require 2FA and disallow tokens.
+# Until those exist, anyone who can push a v* tag can publish.
 on:
   push:
     tags: ["v*"]

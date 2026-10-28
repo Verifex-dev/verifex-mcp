@@ -79,8 +79,9 @@ export function validateArgs(tool, args) {
       if (s.minLength !== undefined && v.trim().length < s.minLength) return `${k} is too short`;
       if (s.maxLength !== undefined && v.length > s.maxLength) return `${k} is too long`;
       if (s.pattern && !new RegExp(s.pattern, "u").test(v)) return `${k} has the wrong format`;
-      // Unicode tag characters are invisible and have no use in a name or id ("ASCII smuggling").
-      if (/[\u{E0000}-\u{E007F}]/u.test(v)) return `${k} has the wrong format`;
+      // Invisible astral characters (Unicode tags, shorthand and musical format controls) and runs
+      // of variation selectors carry hidden text and have no use in a name or id.
+      if (/[\u{E0000}-\u{E007F}\u{1BCA0}-\u{1BCA3}\u{1D173}-\u{1D17A}]|[\uFE00-\uFE0F\u{E0100}-\u{E01EF}]{2,}/u.test(v)) return `${k} has the wrong format`;
     }
   }
   return null;
@@ -97,6 +98,9 @@ export function buildRequest(tool, args, config) {
     // Data minimisation: exactly these four fields leave the client, nothing else.
     body = {};
     for (const k of ["name", "type", "country", "date_of_birth"]) if (typeof args[k] === "string" && args[k].trim()) body[k] = args[k].trim();
+    // Direction marks and soft hyphens often come along when a name is copied from a document.
+    // They change nothing a person can see, so they are removed rather than refused.
+    if (body.name) body.name = body.name.replace(/[\u00AD\u200E\u200F]/g, "").trim();
     if (body.country) body.country = body.country.toUpperCase();
     headers["content-type"] = "application/json";
   }
@@ -184,14 +188,16 @@ async function readBody(res) {
 
 /**
  * Never let a key out, whatever an upstream answer contains: this key in any letter case or in
- * base64, and any other Verifex-looking key or key prefix (vfx_…).
+ * base64, and anything shaped like a full Verifex secret key. Short "vfx_" words are left alone:
+ * a company can be called "VFX Holdings", and a record's names must not be altered.
  */
 function redactKey(result, apiKey) {
   const escapeRe = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const variants = [apiKey, Buffer.from(apiKey).toString("base64"), Buffer.from(apiKey).toString("base64url")];
-  const pattern = new RegExp(`${variants.map(escapeRe).join("|")}|vfx_[A-Za-z0-9_-]{4,}`, "gi");
+  const thisKey = new RegExp([apiKey, Buffer.from(apiKey).toString("base64"), Buffer.from(apiKey).toString("base64url")].map(escapeRe).join("|"), "gi");
+  const anyKey = /vfx_[A-Za-z0-9_]{24,}/g;
   const s = JSON.stringify(result);
-  return pattern.test(s) ? JSON.parse(s.replace(pattern, "[redacted]")) : result;
+  const out = s.replace(thisKey, "[redacted]").replace(anyKey, "[redacted]");
+  return out === s ? result : JSON.parse(out);
 }
 
 function takeScreenSlot(config, now = Date.now()) {

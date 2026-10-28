@@ -77,9 +77,16 @@ const isObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v)
 // Every string below comes from a record: a name someone typed, a list's alias, a notice. It is
 // data, and it must not be able to look like this server's own lines or carry text a person cannot
 // see. These become spaces: control characters (C0, C1 incl. NEL), line and paragraph separators,
-// bidi controls, zero-width space, word joiners, BOM, soft hyphen, and Unicode tag characters
-// (U+E0000-E007F, "ASCII smuggling"). ZWJ/ZWNJ (U+200C/D) stay: Persian and Indic names need them.
-export const INVISIBLE_OR_CONTROL = "\\p{Cc}\\u00AD\\u061C\\u180E\\u200B\\u200E\\u200F\\u2028-\\u202E\\u2060-\\u2064\\u2066-\\u206F\\uFEFF\\u{E0000}-\\u{E007F}";
+// bidi controls, zero-width space, word joiners, BOM, soft hyphen, fillers and other characters
+// that render as nothing (CGJ, Hangul fillers, braille blank, interlinear annotation, musical and
+// shorthand format controls), and Unicode tag characters (U+E0000-E007F, "ASCII smuggling").
+// ZWJ/ZWNJ (U+200C/D) stay: Persian and Indic names need them.
+export const INVISIBLE_OR_CONTROL =
+  "\\p{Cc}\\u00AD\\u034F\\u061C\\u115F\\u1160\\u17B4\\u17B5\\u180E\\u200B\\u200E\\u200F\\u2028-\\u202E\\u2060-\\u2064\\u2066-\\u206F" +
+  "\\u2800\\u3164\\uFEFF\\uFFA0\\uFFF9-\\uFFFB\\u{1BCA0}-\\u{1BCA3}\\u{1D173}-\\u{1D17A}\\u{E0000}-\\u{E007F}";
+// A character takes at most one variation selector (a Japanese name may use one); a run of two or
+// more carries hidden bytes ("variation-selector smuggling") and is removed.
+export const VARIATION_SELECTOR_RUN = /[\uFE00-\uFE0F\u{E0100}-\u{E01EF}]{2,}/gu;
 const UNSAFE = new RegExp(`[${INVISIBLE_OR_CONTROL}]+`, "gu");
 // For JSON text: JSON.stringify already escapes C0 controls inside strings, and its own newlines
 // are structure, so this class leaves U+0000-001F alone and escapes everything else above.
@@ -87,7 +94,7 @@ const UNSAFE_IN_JSON = new RegExp(`[${INVISIBLE_OR_CONTROL.replace("\\p{Cc}", "\
 const MAX_VALUE_CHARS = 200;
 const MAX_NOTICE_CHARS = 4000;
 export function safe(v, max = MAX_VALUE_CHARS) {
-  const flat = String(v).replace(UNSAFE, " ").replace(/ {2,}/g, " ").trim();
+  const flat = String(v).replace(VARIATION_SELECTOR_RUN, "").replace(UNSAFE, " ").replace(/ {2,}/g, " ").trim();
   return flat.length > max ? `${flat.slice(0, max)}…` : flat;
 }
 
@@ -96,10 +103,12 @@ export function safe(v, max = MAX_VALUE_CHARS) {
  * JSON.stringify leaves U+2028/2029, NEL, bidi and tag characters raw; escaping them is lossless
  * (the JSON parses to the same value) and means no value can start a line or hide text.
  */
+const VS_IN_JSON = /[\uFE00-\uFE0F\u{E0100}-\u{E01EF}]/gu;
 export function stringifyEscaped(value, space) {
-  return JSON.stringify(value, null, space).replace(UNSAFE_IN_JSON, (ch) =>
+  const escape = (ch) =>
     [...ch].flatMap((c) => { const u = c.codePointAt(0); return u > 0xffff ? [Math.floor((u - 0x10000) / 0x400) + 0xd800, ((u - 0x10000) % 0x400) + 0xdc00] : [u]; })
-      .map((u) => `\\u${u.toString(16).padStart(4, "0")}`).join(""));
+      .map((u) => `\\u${u.toString(16).padStart(4, "0")}`).join("");
+  return JSON.stringify(value, null, space).replace(UNSAFE_IN_JSON, escape).replace(VS_IN_JSON, escape);
 }
 /** A record value shown in quotes, so it reads as quoted data, never as the server's prose. */
 const quoted = (v) => JSON.stringify(safe(v));
