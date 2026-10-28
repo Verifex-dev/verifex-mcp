@@ -43,7 +43,7 @@ Settings → Developer → Edit Config, then add:
   "mcpServers": {
     "verifex": {
       "command": "npx",
-      "args": ["-y", "verifex-mcp"],
+      "args": ["-y", "verifex-mcp@0.1.1"],
       "env": { "VERIFEX_API_KEY": "<your Verifex API key>" }
     }
   }
@@ -56,7 +56,7 @@ Restart Claude Desktop. You can also install the `verifex-mcp.mcpb` bundle from 
 ### Claude Code
 
 ```bash
-claude mcp add verifex --env VERIFEX_API_KEY=<your Verifex API key> -- npx -y verifex-mcp
+claude mcp add verifex --env VERIFEX_API_KEY=<your Verifex API key> -- npx -y verifex-mcp@0.1.1
 ```
 
 ### Cursor, Windsurf and other clients
@@ -74,7 +74,7 @@ settings (Cursor: `~/.cursor/mcp.json`).
   "servers": {
     "verifex": {
       "command": "npx",
-      "args": ["-y", "verifex-mcp"],
+      "args": ["-y", "verifex-mcp@0.1.1"],
       "env": { "VERIFEX_API_KEY": "${input:verifex-key}" }
     }
   }
@@ -84,21 +84,42 @@ settings (Cursor: `~/.cursor/mcp.json`).
 | Variable | Required | Meaning |
 |---|---|---|
 | `VERIFEX_API_KEY` | yes | Your secret Verifex API key. |
-| `VERIFEX_API_URL` | no | Default `https://api.verifex.dev`. Must be https (http only for localhost). |
+| `VERIFEX_API_URL` | no | Default `https://api.verifex.dev`. Only `verifex.dev` hosts (and `http://localhost` for development) are accepted, because your key is sent there. |
+| `VERIFEX_ALLOW_CUSTOM_API_URL` | no | `1` allows a non-Verifex `VERIFEX_API_URL`, for example your own proxy. Leave unset otherwise. |
+| `VERIFEX_MCP_MAX_SCREENS_PER_10_MIN` | no | Screenings this server will make in any 10 minutes (default 20, at most 500). It stops a runaway assistant from spending your quota. |
+
+**Pin the version** (`verifex-mcp@0.1.1`, as above) so a new release never runs on your machine
+until you choose to update. Releases are listed on the
+[releases page](https://github.com/dvecy/verifex-mcp/releases).
 
 ## Tools
 
 | Tool | What it does | Quota |
 |---|---|---|
-| `screen_name` | Screen one person or company (`name`, optional `type`, `country`, `date_of_birth`). | One screening |
+| `screen_name` | Screen one person or company (`name`, optional `type`, `country` as a two-letter ISO code, `date_of_birth`). | One screening |
 | `get_screening` | Read the stored record of an earlier screening on your account by `request_id`. A stored record may not carry Verifex's decision; then it reads `Review required`. | None |
 | `get_evidence_capsule` | Get the Evidence Capsule for a screening. A capsule still being written is reported as pending. | None |
 
 ## Example prompts
 
-1. *"Screen Acme Trading FZE, a company registered in the United Arab Emirates, and tell me exactly which lists were checked."*
+1. *"Screen Acme Trading FZE, a company registered in the United Arab Emirates (AE), and tell me exactly which lists were checked."*
 2. *"We're onboarding a new distributor contact, Ivan Petrov, born 1971, Russian national. Screen him and, if there is a potential match, list each candidate with its list and programmes."*
 3. *"Get the Evidence Capsule for request scr_… and summarise what was screened, when, and against which list versions, so I can attach it to our customer file."*
+
+## Security
+
+- **Your key goes only to Verifex.** It is sent as a bearer token to the configured origin (by default
+  `https://api.verifex.dev`) and nowhere else. Redirects are never followed. The key is never written
+  to the assistant, to stdout or to logs, and is removed from any result that might contain it.
+- **Results are data, not instructions.** Names, aliases and notes come from records, including names
+  your own systems screened earlier. The server cleans them: no control characters, no line breaks,
+  each one quoted and length-capped. It tells the assistant to treat everything after the status line
+  as data. The status line itself is computed by the server.
+- **Approve screenings yourself.** Each `screen_name` call uses quota. Don't set your client to
+  "always allow" it. The per-process limit above is a backstop, not a substitute.
+- **Bounded.** Answers over 2 MB are refused; every request has a 30-second limit; there are no runtime
+  dependencies.
+- **Releases.** Use a pinned version. Report a vulnerability as described in [SECURITY.md](SECURITY.md).
 
 ## Data and privacy
 

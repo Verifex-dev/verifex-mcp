@@ -1,6 +1,6 @@
 {
   "name": "verifex-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "mcpName": "dev.verifex/screening",
   "description": "MCP server for Verifex sanctions screening: screen a person or company, read a past screening, get its Evidence Capsule.",
   "type": "module",
@@ -8,7 +8,7 @@
   "exports": { ".": "./src/server.mjs", "./summary": "./src/summary.mjs" },
   "files": ["bin", "src", "README.md", "LICENSE"],
   "scripts": {
-    "test": "node --test tests/summary.test.mjs tests/server.test.mjs",
+    "test": "node --test tests/summary.test.mjs tests/server.test.mjs tests/security.test.mjs",
     "pack:mcpb": "node scripts/pack-mcpb.mjs"
   },
   "engines": { "node": ">=18.17.0" },

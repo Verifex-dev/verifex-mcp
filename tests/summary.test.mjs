@@ -24,7 +24,7 @@ test("a sanctions hit is a potential match, never a verdict", () => {
   const s = renderSummary(r);
   assert.equal(s.status, STATUS.POTENTIAL_MATCH);
   assert.match(s.text, /^Verifex status: Potential match — review required/);
-  assert.match(s.text, /Listed Person — OFAC, confidence 97, programs RUSSIA-EO14024/);
+  assert.match(s.text, /"Listed Person" — list "OFAC", confidence 97, programs RUSSIA-EO14024/);
   assert.match(s.text, /This is not a verdict/);
   assert.doesNotMatch(s.text, /confirmed/i);
 });
@@ -109,7 +109,7 @@ test("an exact-only or uncertain no-match needs review, it is not a no-match", (
 test("the evidence line tells pending and missing apart", () => {
   assert.match(renderSummary({ ...complete, total_matches: 0, evidence_persistence: "pending" }).text, /still being written/);
   assert.match(renderSummary({ ...complete, total_matches: 0, evidence_persistence: "unavailable" }).text, /none was saved/);
-  assert.match(renderSummary({ ...complete, total_matches: 0 }).text, /Evidence Capsule: scr_test_1 — open it with get_evidence_capsule/);
+  assert.match(renderSummary({ ...complete, total_matches: 0 }).text, /Evidence Capsule: "scr_test_1" — open it with get_evidence_capsule/);
 });
 
 test("a stored screening reads its finalized root fields over the original result", () => {

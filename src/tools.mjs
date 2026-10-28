@@ -25,9 +25,9 @@ export const TOOLS = [
       required: ["name"],
       additionalProperties: false,
       properties: {
-        name: { type: "string", minLength: 1, maxLength: 500, description: "Full name of the person or company." },
+        name: { type: "string", minLength: 1, maxLength: 500, pattern: "^[^\\p{Cc}\\u2028\\u2029\\u202A-\\u202E\\u2066-\\u2069]+$", description: "Full name of the person or company, on one line." },
         type: { type: "string", enum: ["person", "entity"], description: "person, or entity for a company or organisation." },
-        country: { type: "string", minLength: 2, maxLength: 100, description: "Country of nationality, residence or registration (name or ISO code)." },
+        country: { type: "string", pattern: "^[A-Za-z]{2}$", description: "Two-letter ISO 3166-1 country code of nationality, residence or registration, e.g. AE, DE, RU." },
         date_of_birth: { type: "string", pattern: "^\\d{4}(-\\d{2}-\\d{2})?$", description: "YYYY or YYYY-MM-DD. People only; narrows the candidates." },
       },
     },

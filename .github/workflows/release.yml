@@ -1,0 +1,42 @@
+name: release
+# Publishes a tagged version to npm with provenance (npm trusted publishing: OIDC, no token
+# stored anywhere) and attaches the .mcpb bundle with a signed build attestation.
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: npm with trusted publishing support
+        run: npm install -g npm@11.21.0
+      - run: npm test
+      - name: Tag, package, manifest and registry metadata agree
+        run: |
+          node -e "const t=process.env.GITHUB_REF_NAME.replace(/^v/,''),a=require('./package.json'),b=require('./manifest.json'),c=require('./server.json');for(const v of [a.version,b.version,c.version,c.packages[0].version]) if(v!==t){console.error('version mismatch',v,t);process.exit(1)} if(a.mcpName!==c.name) process.exit(1)"
+      - name: Publish to npm with provenance
+        run: npm publish --provenance --access public
+      - name: Build the bundle
+        run: npm run pack:mcpb
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3
+        with:
+          subject-path: dist/verifex-mcp.mcpb
+      - name: Create the GitHub release with the bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(sha256sum dist/verifex-mcp.mcpb | cut -d' ' -f1)
+          gh release create "$GITHUB_REF_NAME" dist/verifex-mcp.mcpb --verify-tag --title "verifex-mcp ${GITHUB_REF_NAME#v}" \
+            --notes "Install: npx -y verifex-mcp@${GITHUB_REF_NAME#v}. Setup guide: https://verifex.dev/integrations/mcp. verifex-mcp.mcpb sha256: $sha. Verify the bundle: gh attestation verify verifex-mcp.mcpb --repo dvecy/verifex-mcp"

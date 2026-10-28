@@ -73,8 +73,22 @@ function partialReason(r) {
 }
 
 const isObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
-const strings = (v) => (Array.isArray(v) ? v.map((x) => (typeof x === "string" ? x : x?.source)).filter((x) => typeof x === "string" && x) : []);
-const text = (v) => (typeof v === "string" && v.trim() ? v.trim() : null);
+
+// Every string below comes from a record: a name someone typed, a list's alias, a notice. It is
+// data, and it must not be able to look like this server's own lines. Control characters, line and
+// paragraph separators and bidi overrides become spaces (so no value can start a new line such as
+// a forged "Verifex status:"), and each value is capped.
+const UNSAFE = /[\p{Cc}\u2028\u2029\u202A-\u202E\u2066-\u2069]+/gu;
+const MAX_VALUE_CHARS = 200;
+export function safe(v, max = MAX_VALUE_CHARS) {
+  const flat = String(v).replace(UNSAFE, " ").replace(/ {2,}/g, " ").trim();
+  return flat.length > max ? `${flat.slice(0, max)}…` : flat;
+}
+/** A record value shown in quotes, so it reads as quoted data, never as the server's prose. */
+const quoted = (v) => JSON.stringify(safe(v));
+
+const strings = (v) => (Array.isArray(v) ? v.map((x) => (typeof x === "string" ? x : x?.source)).filter((x) => typeof x === "string" && x.trim()).map((x) => safe(x)) : []);
+const text = (v) => (typeof v === "string" && v.trim() ? safe(v, 600) : null);
 const count = (v) => (typeof v === "number" && Number.isFinite(v) ? v : 0);
 
 /**
@@ -86,7 +100,9 @@ export function flattenStoredScreening(body) {
   const base = isObject(body.full_result) ? body.full_result : {};
   const out = { ...base };
   for (const [k, v] of Object.entries(body)) {
-    if (k !== "full_result" && v !== null && v !== undefined) out[k] = v;
+    // An own "__proto__" key from JSON.parse would SET the prototype on plain assignment.
+    if (k === "full_result" || k === "__proto__" || v === null || v === undefined) continue;
+    Object.defineProperty(out, k, { value: v, enumerable: true, writable: true, configurable: true });
   }
   return out;
 }
@@ -133,9 +149,9 @@ export function classify(r) {
   if (r.deciding_engine === "v3" && r.identity_conflict == null && Array.isArray(r.identity_conflict_attributes) && r.identity_conflict_attributes.length > 0) {
     reviewReasons.push("Conflicting identity details were reported but not assessed.");
   }
-  if (typeof r.risk_tier === "string" && r.risk_tier !== "clear") reviewReasons.push(`Verifex placed this result in its "${r.risk_tier}" tier.`);
+  if (typeof r.risk_tier === "string" && r.risk_tier !== "clear") reviewReasons.push(`Verifex placed this result in its ${quoted(r.risk_tier)} tier.`);
   if (typeof r.risk_level === "string" && !["clear", "unavailable"].includes(r.risk_level) && !hasMatches) {
-    reviewReasons.push(`Risk level is "${r.risk_level}" with no candidate listed.`);
+    reviewReasons.push(`Risk level is ${quoted(r.risk_level)} with no candidate listed.`);
   }
 
   let status;
@@ -175,14 +191,14 @@ function evidenceLine(r, stored) {
   if (!id) return "Evidence Capsule: not referenced in this result.";
   // "pending" is true only at the moment the screening was served; a stored copy may still say it.
   const pending = !stored && r.evidence_persistence === "pending" ? " (still being written; it can take a few seconds)" : "";
-  return `Evidence Capsule: ${id}${pending} — open it with get_evidence_capsule.`;
+  return `Evidence Capsule: ${quoted(id)}${pending} — open it with get_evidence_capsule.`;
 }
 
 function matchLines(r) {
   const matches = Array.isArray(r.matches) ? r.matches : [];
   const lines = matches.slice(0, MAX_LISTED_MATCHES).map((m, i) => {
-    const name = text(m?.name) ?? "(unnamed)";
-    const parts = [text(m?.source), typeof m?.confidence === "number" ? `confidence ${Math.round(m.confidence)}` : null, strings(m?.programs).length ? `programs ${strings(m.programs).join(", ")}` : null].filter(Boolean);
+    const name = text(m?.name) ? quoted(m.name) : "(unnamed)";
+    const parts = [text(m?.source) ? `list ${quoted(m.source)}` : null, typeof m?.confidence === "number" && Number.isFinite(m.confidence) ? `confidence ${Math.round(m.confidence)}` : null, strings(m?.programs).length ? `programs ${strings(m.programs).join(", ")}` : null].filter(Boolean);
     return `  ${i + 1}. ${name}${parts.length ? ` — ${parts.join(", ")}` : ""}`;
   });
   const total = Math.max(count(r.total_matches), matches.length);
@@ -199,9 +215,9 @@ export function renderSummary(r, { stored = false } = {}) {
   const lines = [`Verifex status: ${c.label}`];
   if (isObject(r)) {
     const q = isObject(r.query) ? r.query : {};
-    const who = [text(q.name) ? `"${q.name}"` : null, text(q.type), text(q.country)].filter(Boolean).join(", ");
-    const when = [who || null, text(r.screened_at) ? `screened ${r.screened_at}` : null, text(r.request_id) ? `request_id ${r.request_id}` : null].filter(Boolean);
-    if (when.length) lines.push(when.join(" · "));
+    const who = [text(q.name) ? `name ${quoted(q.name)}` : null, text(q.type) ? `type ${quoted(q.type)}` : null, text(q.country) ? `country ${quoted(q.country)}` : null].filter(Boolean).join(", ");
+    const when = [who || null, text(r.screened_at) ? `screened ${quoted(r.screened_at)}` : null, text(r.request_id) ? `request_id ${quoted(r.request_id)}` : null].filter(Boolean);
+    if (when.length) lines.push(`Screened: ${when.join(" · ")}`);
   }
   if (c.status === STATUS.POTENTIAL_MATCH) {
     lines.push("Potential matches:", ...matchLines(r));

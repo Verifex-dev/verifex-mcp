@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "verifex-mcp",
   "display_name": "Verifex sanctions screening",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Screen people and companies against sanctions lists and fetch the Evidence Capsule audit record.",
   "long_description": "Screens one person or company at a time against the sanctions and watchlists on your Verifex plan, reads back past screenings and retrieves each screening's Evidence Capsule. Every result starts with a status line: a potential match reads \"Potential match — review required\", zero matches name the lists that were checked, and a screening that could not complete reads \"Screening incomplete\". Only the name, type, country and date of birth are sent to Verifex. Screenings bill to your existing Verifex plan.",
   "author": { "name": "Verifex", "email": "hello@verifex.dev", "url": "https://verifex.dev" },
