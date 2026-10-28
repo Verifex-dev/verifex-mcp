@@ -65,4 +65,4 @@ jobs:
         run: |
           sha=$(sha256sum dist/verifex-mcp.mcpb | cut -d' ' -f1)
           gh release create "$GITHUB_REF_NAME" dist/verifex-mcp.mcpb --verify-tag --title "verifex-mcp ${GITHUB_REF_NAME#v}" \
-            --notes "npm: verifex-mcp@${GITHUB_REF_NAME#v} (live once approved on npm). Setup guide: https://verifex.dev/integrations/mcp. verifex-mcp.mcpb sha256: $sha. Verify the bundle: gh attestation verify verifex-mcp.mcpb --repo dvecy/verifex-mcp"
+            --notes "npm: verifex-mcp@${GITHUB_REF_NAME#v} (live once approved on npm). Setup guide: https://verifex.dev/integrations/mcp. verifex-mcp.mcpb sha256: $sha. Verify the bundle: gh attestation verify verifex-mcp.mcpb --repo Verifex-dev/verifex-mcp"

@@ -9,7 +9,7 @@
   "homepage": "https://verifex.dev/integrations/mcp",
   "documentation": "https://verifex.dev/integrations/mcp",
   "support": "https://verifex.dev/support",
-  "repository": { "type": "git", "url": "https://github.com/dvecy/verifex-mcp" },
+  "repository": { "type": "git", "url": "https://github.com/Verifex-dev/verifex-mcp" },
   "icon": "icon.png",
   "license": "MIT",
   "keywords": ["sanctions", "screening", "aml", "kyc", "compliance", "ofac"],

@@ -15,7 +15,7 @@
   "keywords": ["mcp", "model-context-protocol", "verifex", "sanctions", "sanctions-screening", "aml", "kyc", "ofac", "compliance"],
   "author": "Verifex <hello@verifex.dev>",
   "license": "MIT",
-  "repository": { "type": "git", "url": "git+https://github.com/dvecy/verifex-mcp.git" },
+  "repository": { "type": "git", "url": "git+https://github.com/Verifex-dev/verifex-mcp.git" },
   "homepage": "https://verifex.dev/integrations/mcp",
-  "bugs": { "url": "https://github.com/dvecy/verifex-mcp/issues" }
+  "bugs": { "url": "https://github.com/Verifex-dev/verifex-mcp/issues" }
 }

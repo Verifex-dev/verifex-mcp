@@ -51,7 +51,7 @@ Settings → Developer → Edit Config, then add:
 ```
 
 Restart Claude Desktop. You can also install the `verifex-mcp.mcpb` bundle from the
-[releases page](https://github.com/dvecy/verifex-mcp/releases); Claude Desktop asks for the key.
+[releases page](https://github.com/Verifex-dev/verifex-mcp/releases); Claude Desktop asks for the key.
 
 ### Claude Code
 
@@ -90,7 +90,7 @@ settings (Cursor: `~/.cursor/mcp.json`).
 
 **Pin the version** (`verifex-mcp@0.1.1`, as above) so a new release never runs on your machine
 until you choose to update. Releases are listed on the
-[releases page](https://github.com/dvecy/verifex-mcp/releases).
+[releases page](https://github.com/Verifex-dev/verifex-mcp/releases).
 
 ## Tools
 
