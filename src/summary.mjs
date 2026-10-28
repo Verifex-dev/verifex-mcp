@@ -87,6 +87,9 @@ export const INVISIBLE_OR_CONTROL =
 // A character takes at most one variation selector (a Japanese name may use one); a run of two or
 // more carries hidden bytes ("variation-selector smuggling") and is removed.
 export const VARIATION_SELECTOR_RUN = /[\uFE00-\uFE0F\u{E0100}-\u{E01EF}]{2,}/gu;
+// A variation selector is legitimate only directly after the letter, digit or symbol it varies.
+// Anywhere else (after a joiner, a mark, a space, another selector) it is a carrier for hidden data.
+export const STRAY_VARIATION_SELECTOR = /(?<![\p{L}\p{N}\p{S}])[\uFE00-\uFE0F\u{E0100}-\u{E01EF}]/gu;
 const UNSAFE = new RegExp(`[${INVISIBLE_OR_CONTROL}]+`, "gu");
 // For JSON text: JSON.stringify already escapes C0 controls inside strings, and its own newlines
 // are structure, so this class leaves U+0000-001F alone and escapes everything else above.
@@ -94,7 +97,7 @@ const UNSAFE_IN_JSON = new RegExp(`[${INVISIBLE_OR_CONTROL.replace("\\p{Cc}", "\
 const MAX_VALUE_CHARS = 200;
 const MAX_NOTICE_CHARS = 4000;
 export function safe(v, max = MAX_VALUE_CHARS) {
-  const flat = String(v).replace(VARIATION_SELECTOR_RUN, "").replace(UNSAFE, " ").replace(/ {2,}/g, " ").trim();
+  const flat = String(v).replace(VARIATION_SELECTOR_RUN, "").replace(STRAY_VARIATION_SELECTOR, "").replace(UNSAFE, " ").replace(/ {2,}/g, " ").trim();
   return flat.length > max ? `${flat.slice(0, max)}…` : flat;
 }
 

@@ -129,3 +129,20 @@ test("direction marks and soft hyphens from copied names are removed, not refuse
   const { init } = buildRequest(tool("screen_name"), { name }, base("https://api.verifex.dev"));
   assert.equal(JSON.parse(init.body).name, "محمد علی");
 });
+
+
+// ── Final check: interleaved variation selectors; a name that is only marks ─────────────────
+
+test("variation selectors spaced out by joiners or marks are removed and refused", () => {
+  for (const sep of [0x200d, 0x200c, 0x0301]) {
+    const hidden = "A" + Array.from({ length: 12 }, (_, i) => cp(sep, 0xfe00 + i)).join("");
+    const t = renderSummary({ ...complete, query: { name: hidden } }).text;
+    assert.ok(![...t].some((c) => c.codePointAt(0) >= 0xfe00 && c.codePointAt(0) <= 0xfe0f), `display, separator U+${sep.toString(16)}`);
+    assert.match(validateArgs(tool("screen_name"), { name: hidden }) ?? "", /wrong format/, `input, separator U+${sep.toString(16)}`);
+  }
+  assert.equal(validateArgs(tool("screen_name"), { name: `葛${cp(0xe0100)}飾` }), null, "one selector after an ideograph stays valid");
+});
+
+test("a name made only of direction marks is refused before it uses a screening slot", () => {
+  assert.match(validateArgs(tool("screen_name"), { name: `${cp(0x200e)}${cp(0x200f)}${cp(0x00ad)}` }) ?? "", /too short/);
+});

@@ -4,7 +4,10 @@
 // written to stdout or stderr, nor echoed in a tool result.
 
 import { pathParams, TOOLS } from "./tools.mjs";
-import { flattenStoredScreening, renderFailure, renderSummary, safe, stringifyEscaped } from "./summary.mjs";
+import { flattenStoredScreening, renderFailure, renderSummary, safe, STRAY_VARIATION_SELECTOR, stringifyEscaped } from "./summary.mjs";
+
+// Removed from a screened name before sending: they change nothing a person can see.
+const SOFT_MARKS = /[\u00AD\u200E\u200F]/g;
 
 export const SERVER_INFO = { name: "verifex-screening", title: "Verifex sanctions screening", version: "0.1.1" };
 const PROTOCOL_VERSIONS = ["2025-06-18", "2025-03-26", "2024-11-05"];
@@ -82,6 +85,9 @@ export function validateArgs(tool, args) {
       // Invisible astral characters (Unicode tags, shorthand and musical format controls) and runs
       // of variation selectors carry hidden text and have no use in a name or id.
       if (/[\u{E0000}-\u{E007F}\u{1BCA0}-\u{1BCA3}\u{1D173}-\u{1D17A}]|[\uFE00-\uFE0F\u{E0100}-\u{E01EF}]{2,}/u.test(v)) return `${k} has the wrong format`;
+      STRAY_VARIATION_SELECTOR.lastIndex = 0;
+      if (STRAY_VARIATION_SELECTOR.test(v)) return `${k} has the wrong format`;
+      if (k === "name" && !v.replace(SOFT_MARKS, "").trim()) return `${k} is too short`;
     }
   }
   return null;
@@ -100,7 +106,7 @@ export function buildRequest(tool, args, config) {
     for (const k of ["name", "type", "country", "date_of_birth"]) if (typeof args[k] === "string" && args[k].trim()) body[k] = args[k].trim();
     // Direction marks and soft hyphens often come along when a name is copied from a document.
     // They change nothing a person can see, so they are removed rather than refused.
-    if (body.name) body.name = body.name.replace(/[\u00AD\u200E\u200F]/g, "").trim();
+    if (body.name) body.name = body.name.replace(SOFT_MARKS, "").trim();
     if (body.country) body.country = body.country.toUpperCase();
     headers["content-type"] = "application/json";
   }
