@@ -1,0 +1,49 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "dev.verifex/screening",
+  "title": "Verifex sanctions screening",
+  "description": "Screen people and companies against sanctions lists and fetch the Evidence Capsule audit record.",
+  "websiteUrl": "https://verifex.dev/integrations/mcp",
+  "icons": [
+    {
+      "src": "https://verifex.dev/brand/verifex-icon-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    }
+  ],
+  "repository": {
+    "url": "https://github.com/dvecy/verifex-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "verifex-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "VERIFEX_API_KEY",
+          "description": "Your Verifex secret API key (dashboard → API Keys). Screenings bill to your Verifex plan.",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "VERIFEX_API_URL",
+          "description": "API origin. Leave unset for https://api.verifex.dev.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "string",
+          "default": "https://api.verifex.dev"
+        }
+      ]
+    }
+  ]
+}

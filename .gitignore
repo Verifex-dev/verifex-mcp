@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.pem
+.env
+.env.*
+.mcpregistry_*

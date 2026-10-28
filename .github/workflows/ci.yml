@@ -1,0 +1,21 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm test
+      - name: Manifest and package versions agree
+        run: node -e "const a=require('./package.json'),b=require('./manifest.json'),c=require('./server.json');if(a.version!==b.version||a.version!==c.version||a.version!==c.packages[0].version||a.mcpName!==c.name)process.exit(1)"

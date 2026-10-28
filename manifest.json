@@ -1,0 +1,43 @@
+{
+  "manifest_version": "0.3",
+  "name": "verifex-mcp",
+  "display_name": "Verifex sanctions screening",
+  "version": "0.1.0",
+  "description": "Screen people and companies against sanctions lists and fetch the Evidence Capsule audit record.",
+  "long_description": "Screens one person or company at a time against the sanctions and watchlists on your Verifex plan, reads back past screenings and retrieves each screening's Evidence Capsule. Every result starts with a status line: a potential match reads \"Potential match — review required\", zero matches name the lists that were checked, and a screening that could not complete reads \"Screening incomplete\". Only the name, type, country and date of birth are sent to Verifex. Screenings bill to your existing Verifex plan.",
+  "author": { "name": "Verifex", "email": "hello@verifex.dev", "url": "https://verifex.dev" },
+  "homepage": "https://verifex.dev/integrations/mcp",
+  "documentation": "https://verifex.dev/integrations/mcp",
+  "support": "https://verifex.dev/support",
+  "repository": { "type": "git", "url": "https://github.com/dvecy/verifex-mcp" },
+  "icon": "icon.png",
+  "license": "MIT",
+  "keywords": ["sanctions", "screening", "aml", "kyc", "compliance", "ofac"],
+  "privacy_policies": ["https://verifex.dev/privacy"],
+  "server": {
+    "type": "node",
+    "entry_point": "bin/verifex-mcp.mjs",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/bin/verifex-mcp.mjs"],
+      "env": {
+        "VERIFEX_API_KEY": "${user_config.api_key}"
+      }
+    }
+  },
+  "tools": [
+    { "name": "screen_name", "description": "Screen a person or company against the lists on your Verifex plan." },
+    { "name": "get_screening", "description": "Read back an earlier screening by request_id." },
+    { "name": "get_evidence_capsule", "description": "Get the Evidence Capsule audit record of a screening." }
+  ],
+  "compatibility": { "platforms": ["darwin", "win32", "linux"], "runtimes": { "node": ">=18.17.0" } },
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "Verifex API key",
+      "description": "Your secret API key from the Verifex dashboard (API Keys). Screenings bill to your Verifex plan.",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}

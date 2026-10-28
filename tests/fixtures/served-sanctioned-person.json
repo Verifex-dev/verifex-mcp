@@ -1,0 +1,686 @@
+{
+  "query": {
+    "name": "Vladimir Putin",
+    "type": "person"
+  },
+  "matches": [
+    {
+      "id": "cmvrz0593000qrwzg8avg4mar",
+      "name": "PUTIN, Vladimir Vladimirovich",
+      "aliases": [
+        "Vladimir Putin",
+        "V.V. Putin"
+      ],
+      "source": "OFAC",
+      "entity_type": "person",
+      "nationality": "Russia",
+      "date_of_birth": "1952-10-07",
+      "reason": "President of the Russian Federation (fixture)",
+      "programs": [
+        "RUSSIA-EO14024",
+        "UKRAINE-EO13661"
+      ],
+      "confidence": 100,
+      "risk_level": "high",
+      "match_type": "EXACT",
+      "precise_match_type": "EXACT_ALIAS",
+      "matched_name": "Vladimir Putin",
+      "matched_name_kind": "alias",
+      "source_severity": "primary",
+      "source_type": "sanctions",
+      "source_category": "sanctions",
+      "evidence": [
+        {
+          "field": "date_of_birth",
+          "status": "missing",
+          "weight": 0,
+          "detail": "date_of_birth was not provided in the request — not compared"
+        },
+        {
+          "field": "country",
+          "status": "missing",
+          "weight": 0,
+          "detail": "country was not provided in the request — not compared"
+        },
+        {
+          "field": "identifier",
+          "status": "missing",
+          "weight": 0,
+          "detail": "identifier was not provided in the request and is not recorded on the listed entry — not compared"
+        }
+      ],
+      "explanation": {
+        "match_stage": "exact",
+        "raw_confidence": 100,
+        "final_confidence": 100,
+        "token_matches": [
+          {
+            "query_token": "vladimir",
+            "matched_token": "vladimir",
+            "similarity": 1
+          },
+          {
+            "query_token": "putin",
+            "matched_token": "putin",
+            "similarity": 1
+          }
+        ],
+        "penalties_applied": [],
+        "fp_risk": "VERY_LOW",
+        "match_reason": "Exact match: \"Vladimir Putin\" matches \"PUTIN, Vladimir Vladimirovich\" on OFAC (confidence 100%).",
+        "contextual_evidence": [
+          {
+            "field": "date_of_birth",
+            "status": "missing",
+            "weight": 0,
+            "detail": "date_of_birth was not provided in the request — not compared"
+          },
+          {
+            "field": "country",
+            "status": "missing",
+            "weight": 0,
+            "detail": "country was not provided in the request — not compared"
+          },
+          {
+            "field": "identifier",
+            "status": "missing",
+            "weight": 0,
+            "detail": "identifier was not provided in the request and is not recorded on the listed entry — not compared"
+          }
+        ],
+        "candidate_a": {
+          "engine_version": "candidate-a-cycle3-635192c49497",
+          "scorer_version": "v4-deterministic-evidence-cycle2-interaction-4",
+          "feature_schema_version": "v4-identity-features-6",
+          "identity_confidence": 1,
+          "uncertainty": 0,
+          "uncertainty_reason": null,
+          "evidence_codes": [
+            "EXACT_ALIAS",
+            "UNICODE_LITERAL_EXACT",
+            "NAME_EXACT_REORDERED_PERSON",
+            "PHONETIC_AGREEMENT",
+            "SURNAME_AGREEMENT"
+          ],
+          "conflict_codes": [],
+          "feature_values": {
+            "isPerson": true,
+            "exactPrimary": false,
+            "exactAlias": true,
+            "unicodeExact": true,
+            "exactTokenSetMatch": true,
+            "orderSensitiveParticle": false,
+            "jaroWinkler": 1,
+            "characterNgramDice": 1,
+            "tokenAlignment": 1,
+            "orderedTokenAlignment": 1,
+            "alignedTokenCoverage": 1,
+            "exactTokenJaccard": 1,
+            "surnameAgreement": 1,
+            "initialsAgreement": 1,
+            "phoneticAgreement": true,
+            "legalCoreAgreement": null,
+            "queryTokenCount": 2,
+            "candidateTokenCount": 2,
+            "candidateListedTokenCount": 2,
+            "queryLength": 14,
+            "shortSingleToken": false,
+            "retrievalGeneratorCount": 2,
+            "exactRetrievalEvidence": true,
+            "dobAgreement": null,
+            "countryAgreement": null,
+            "identifierAgreement": null,
+            "dobQueryPresent": false,
+            "dobCandidatePresent": true,
+            "countryQueryPresent": false,
+            "countryCandidatePresent": true,
+            "identifierQueryPresent": false,
+            "identifierCandidatePresent": false,
+            "corroboratingAttributeCount": 0,
+            "distinctiveTokenAlignment": 0,
+            "trigramOnly": false,
+            "trigramPoolSaturated": false
+          }
+        }
+      },
+      "adjudication": {
+        "action": "REVIEW",
+        "recommendation_confidence": 100,
+        "auto_closeable": false,
+        "reasoning": "Candidate A found identity evidence at the frozen review threshold; human review is required.",
+        "factors": [
+          {
+            "factor": "candidate_a_identity_confidence",
+            "signal": "negative",
+            "weight": 100,
+            "detail": "Frozen Candidate A identity confidence: 1"
+          }
+        ],
+        "review_sla": "24_hours"
+      }
+    }
+  ],
+  "total_matches": 1,
+  "risk_level": "high",
+  "screened_at": "2026-10-28T10:28:24.519Z",
+  "request_id": "72GVYRbmOdU6EtZvE7BSp",
+  "decision_hash": "7acfe4b1042f43bca7247f864c191f7ab69e400206fd4d82710c9ff8768ce837",
+  "lists_checked": [
+    "EU",
+    "OFAC",
+    "PEP",
+    "UK",
+    "UN"
+  ],
+  "sources_checked": [
+    "EU",
+    "OFAC",
+    "PEP",
+    "UK",
+    "UN"
+  ],
+  "sources_excluded_by_plan": [],
+  "sources_withheld_unavailable": [
+    "ADB_DEBARMENT",
+    "AUSTRALIA",
+    "AU_ASIC_BANNED",
+    "AZERBAIJAN_HMS",
+    "BELGIUM_TREASURY",
+    "BIS_DPL",
+    "BIS_ENTITY_LIST",
+    "BIS_MEU",
+    "BIS_UVL",
+    "BR_PEP",
+    "CANADA",
+    "CZECH_NATIONAL_SANCTIONS",
+    "EUROPOL_MOST_WANTED",
+    "EU_HIGH_RISK_COUNTRIES",
+    "EU_PARLIAMENT_MEPS",
+    "FATF_HIGH_RISK",
+    "FBI",
+    "FRANCE_TRESOR",
+    "HONG_KONG_TFS",
+    "IDB_INVEST",
+    "INDIA_UAPA",
+    "JAPAN_MOF",
+    "LATVIA_FID_FROZEN_ASSETS",
+    "NETHERLANDS_SANCTION",
+    "NEW_ZEALAND_MFAT",
+    "OFAC_CAPTA",
+    "OFAC_CMIC",
+    "OFAC_NON_SDN",
+    "OFAC_NS_MBS",
+    "OFAC_PLC",
+    "OFAC_SSI",
+    "OIG_LEIE",
+    "SINGAPORE_MAS",
+    "SWITZERLAND",
+    "TAIWAN_SHTC",
+    "TH_AMLO",
+    "UK_HIGH_RISK_COUNTRIES",
+    "US_DDTC",
+    "US_FDA_DEBARMENTS",
+    "US_ISN"
+  ],
+  "availability_scope_notice": "40 sources included in your plan were not consulted for this screening because they were not available: ADB_DEBARMENT, AUSTRALIA, AU_ASIC_BANNED, AZERBAIJAN_HMS, BELGIUM_TREASURY, BIS_DPL, BIS_ENTITY_LIST, BIS_MEU, BIS_UVL, BR_PEP, CANADA, CZECH_NATIONAL_SANCTIONS, EUROPOL_MOST_WANTED, EU_HIGH_RISK_COUNTRIES, EU_PARLIAMENT_MEPS, FATF_HIGH_RISK, FBI, FRANCE_TRESOR, HONG_KONG_TFS, IDB_INVEST, INDIA_UAPA, JAPAN_MOF, LATVIA_FID_FROZEN_ASSETS, NETHERLANDS_SANCTION, NEW_ZEALAND_MFAT, OFAC_CAPTA, OFAC_CMIC, OFAC_NON_SDN, OFAC_NS_MBS, OFAC_PLC, OFAC_SSI, OIG_LEIE, SINGAPORE_MAS, SWITZERLAND, TAIWAN_SHTC, TH_AMLO, UK_HIGH_RISK_COUNTRIES, US_DDTC, US_FDA_DEBARMENTS, US_ISN. This is a data-availability limitation on our side, not a limitation of your plan.",
+  "coverage_status": "complete",
+  "coverage_notice": "Complete for the required lists. Also searched: 1 additional list whose publisher is not yet independently verified (PEP); it can add hits but is not part of the completeness claim.",
+  "policy_resolution_status": "resolved",
+  "effective_policy_resolution": "RESOLVED_DEFAULT",
+  "policy": {
+    "id": "default-screening-policy",
+    "name": "Verifex default screening policy",
+    "version": 1
+  },
+  "api_version": "v1",
+  "restricted_matches": 0,
+  "restricted_sources": [],
+  "upgrade_hint": null,
+  "risk_tier": "review",
+  "candidate_set_complete": true,
+  "candidates_truncated": false,
+  "candidates_available": 1,
+  "candidate_cap": 20,
+  "screening_mode": "standard",
+  "clearance_eligible": true,
+  "identity_conflict": false,
+  "identity_conflict_attributes": [],
+  "deciding_engine": "vnext",
+  "decision_ceiling": null,
+  "ceiling_origin": null,
+  "risk_aggregation": {
+    "max_sanctions_confidence": 100,
+    "max_pep_confidence": 0,
+    "max_overall_confidence": 100,
+    "strongest_source_category": "sanctions",
+    "pep_review_required": false,
+    "risk_reason": "Sanctions only: max confidence 100%",
+    "safety_floor_applied": false
+  },
+  "cached": false,
+  "screening_decision_id": "7acfe4b1042f43bca7247f864c191f7ab69e400206fd4d82710c9ff8768ce837",
+  "audit": {
+    "screened_at": "2026-10-28T10:28:24.519Z",
+    "list_versions": {},
+    "source_provenance": {
+      "provenance_version": "v1",
+      "sources": {
+        "ADB_DEBARMENT": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "AUSTRALIA": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "AU_ASIC_BANNED": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "AZERBAIJAN_HMS": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "BELGIUM_TREASURY": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "BIS_DPL": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "BIS_ENTITY_LIST": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "BIS_MEU": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "BIS_UVL": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "BR_PEP": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "CANADA": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "CZECH_NATIONAL_SANCTIONS": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "EU": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "EUROPOL_MOST_WANTED": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "EU_HIGH_RISK_COUNTRIES": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "EU_PARLIAMENT_MEPS": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "FBI": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "FRANCE_TRESOR": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "HONG_KONG_TFS": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "IDB_INVEST": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "INDIA_UAPA": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "JAPAN_MOF": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "LATVIA_FID_FROZEN_ASSETS": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "NETHERLANDS_SANCTION": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "NEW_ZEALAND_MFAT": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "OFAC": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "OFAC_CAPTA": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "OFAC_CMIC": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "OFAC_NON_SDN": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "OFAC_NS_MBS": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "OFAC_PLC": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "OFAC_SSI": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "OIG_LEIE": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "PEP": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "SINGAPORE_MAS": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "SWITZERLAND": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "TAIWAN_SHTC": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "TH_AMLO": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "UK": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "UK_HIGH_RISK_COUNTRIES": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "UN": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "US_DDTC": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "US_FDA_DEBARMENTS": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        },
+        "US_ISN": {
+          "last_synced": null,
+          "snapshot_id": null,
+          "file_checksum": null,
+          "schema_hash": null,
+          "parser_version": null,
+          "snapshot_promoted_at": null
+        }
+      }
+    },
+    "algorithm_version": "candidate-a-cycle3-635192c49497",
+    "policy_version": "v4-conservative-prototype-policy-1",
+    "processing_time_ms": 20,
+    "engine_version": "candidate-a-cycle3-635192c49497",
+    "scorer_version": "v4-deterministic-evidence-cycle2-interaction-4",
+    "scorer_duration_ms": 0.691,
+    "routing_mode": "vnext",
+    "routing_reason_codes": [
+      "CANDIDATES:1",
+      "TOP_KIND:blocking_sanctions",
+      "DECIDED_BY:vnext"
+    ],
+    "name_only_block_prevented": true,
+    "engine_mode": "vnext",
+    "retrieval_config": "lexical+fuzzy+phonetic",
+    "decision_schema_version": 8,
+    "vnext_versions": {
+      "pipeline": "v4-decision-pipeline-1.2.0",
+      "evidence_model": "v4-evidence-model-1.2.0",
+      "source_kind_policy": "v4-source-kind-policy-1.1.0",
+      "confusable_fold": "v4-confusable-fold-1.0.0"
+    },
+    "vnext_public_mapping_version": "vnext-public-map-1.0.0"
+  },
+  "verdict": "possible_match",
+  "risk_score": 79,
+  "confidence_score": 1,
+  "human_review_required": true,
+  "recommended_action": "manual_review",
+  "reasons": [
+    "EXACT candidate against OFAC with 100% confidence.",
+    "Candidate record also lists 2 aliases.",
+    "Country information missing — disambiguation is limited.",
+    "Date of birth not provided — cannot rule out homonyms.",
+    "Risk score ≥ 60 — manual review recommended."
+  ],
+  "missing_fields": [
+    "country",
+    "date_of_birth"
+  ],
+  "audit_log_available": false,
+  "evidence_persistence": "pending",
+  "evidence_capsule_id": "72GVYRbmOdU6EtZvE7BSp",
+  "evidence_capsule_url": "/v1/evidence-capsules/72GVYRbmOdU6EtZvE7BSp",
+  "signals": {
+    "match_strength": "moderate",
+    "evidence_strength": "name_only",
+    "review_reason": [
+      "exact_name_match",
+      "missing_country",
+      "missing_dob",
+      "missing_identifier",
+      "sanctions_program_match",
+      "source_severity_high",
+      "weak_context"
+    ],
+    "disambiguation_required": false,
+    "missing_context": [
+      "date_of_birth",
+      "country",
+      "id_number"
+    ],
+    "recommended_review_priority": "high"
+  }
+}
