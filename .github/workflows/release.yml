@@ -1,13 +1,14 @@
 name: release
-# Publishes a tagged version to npm with provenance (npm trusted publishing: OIDC, no token
-# stored anywhere), then attaches the .mcpb bundle with a signed build attestation.
+# Stages a tagged version on npm (npm trusted publishing: OIDC, no token stored anywhere), then
+# attaches the .mcpb bundle with a signed build attestation. A staged version is NOT public until
+# a maintainer approves it on npmjs.com with 2FA.
 #
-# Must also be guarded OUTSIDE this file, in owner settings that this workflow cannot check:
-#   - GitHub environment `npm`: owner as required reviewer, deployments only from v* tags;
-#   - rulesets protecting main and v* tags;
-#   - npm trusted publisher bound to this workflow and the `npm` environment, with publishing
-#     set to require 2FA and disallow tokens.
-# Until those exist, anyone who can push a v* tag can publish.
+# Also guarded outside this file, in settings this workflow cannot check (set 2026-10-28):
+#   - GitHub environment `npm`: the owner is a required reviewer; deployments only from v* tags;
+#   - rulesets: main cannot be deleted or force-pushed; only admins create v* tags, which cannot
+#     be moved or deleted;
+#   - npm trusted publisher bound to this workflow and the `npm` environment, allowed to STAGE
+#     only (not publish directly).
 on:
   push:
     tags: ["v*"]
@@ -36,9 +37,11 @@ jobs:
       - name: Tag, package, manifest and registry metadata agree
         run: |
           node -e "const t=process.env.GITHUB_REF_NAME.replace(/^v/,''),a=require('./package.json'),b=require('./manifest.json'),c=require('./server.json');for(const v of [a.version,b.version,c.version,c.packages[0].version]) if(v!==t){console.error('version mismatch',v,t);process.exit(1)} if(a.mcpName!==c.name) process.exit(1)"
-      - name: Publish to npm with provenance
-        run: npm publish --provenance --access public
+      - name: Stage on npm (the owner approves it on npmjs.com with 2FA)
+        run: npm stage publish --provenance --access public
 
+  # The bundle is built from the same tagged commit. Its release is public at once, so the notes
+  # say that the npm version is live only after approval.
   release:
     needs: publish
     runs-on: ubuntu-latest
@@ -62,4 +65,4 @@ jobs:
         run: |
           sha=$(sha256sum dist/verifex-mcp.mcpb | cut -d' ' -f1)
           gh release create "$GITHUB_REF_NAME" dist/verifex-mcp.mcpb --verify-tag --title "verifex-mcp ${GITHUB_REF_NAME#v}" \
-            --notes "Install: npx -y verifex-mcp@${GITHUB_REF_NAME#v}. Setup guide: https://verifex.dev/integrations/mcp. verifex-mcp.mcpb sha256: $sha. Verify the bundle: gh attestation verify verifex-mcp.mcpb --repo dvecy/verifex-mcp"
+            --notes "npm: verifex-mcp@${GITHUB_REF_NAME#v} (live once approved on npm). Setup guide: https://verifex.dev/integrations/mcp. verifex-mcp.mcpb sha256: $sha. Verify the bundle: gh attestation verify verifex-mcp.mcpb --repo dvecy/verifex-mcp"
