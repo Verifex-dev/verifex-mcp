@@ -74,7 +74,8 @@ test("only verifex.dev hosts and localhost are accepted as the API origin, unles
     assert.throws(() => configFromEnv({ VERIFEX_API_KEY: "k", VERIFEX_API_URL: url }), Error, url);
   }
   assert.equal(configFromEnv({ VERIFEX_API_KEY: "k" }).baseUrl, "https://api.verifex.dev");
-  assert.equal(configFromEnv({ VERIFEX_API_KEY: "k", VERIFEX_API_URL: "https://staging.verifex.dev" }).customOrigin, true);
+  assert.throws(() => configFromEnv({ VERIFEX_API_KEY: "k", VERIFEX_API_URL: "https://status.verifex.dev" }), /not https:\/\/api\.verifex\.dev/, "a third-party-hosted verifex.dev name");
+  assert.equal(configFromEnv({ VERIFEX_API_KEY: "k", VERIFEX_API_URL: "http://localhost:4001" }).customOrigin, true);
   assert.equal(configFromEnv({ VERIFEX_API_KEY: "k", VERIFEX_API_URL: "https://proxy.example", VERIFEX_ALLOW_CUSTOM_API_URL: "1" }).baseUrl, "https://proxy.example");
 });
 

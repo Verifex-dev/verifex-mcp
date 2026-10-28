@@ -75,20 +75,38 @@ function partialReason(r) {
 const isObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
 
 // Every string below comes from a record: a name someone typed, a list's alias, a notice. It is
-// data, and it must not be able to look like this server's own lines. Control characters, line and
-// paragraph separators and bidi overrides become spaces (so no value can start a new line such as
-// a forged "Verifex status:"), and each value is capped.
-const UNSAFE = /[\p{Cc}\u2028\u2029\u202A-\u202E\u2066-\u2069]+/gu;
+// data, and it must not be able to look like this server's own lines or carry text a person cannot
+// see. These become spaces: control characters (C0, C1 incl. NEL), line and paragraph separators,
+// bidi controls, zero-width space, word joiners, BOM, soft hyphen, and Unicode tag characters
+// (U+E0000-E007F, "ASCII smuggling"). ZWJ/ZWNJ (U+200C/D) stay: Persian and Indic names need them.
+export const INVISIBLE_OR_CONTROL = "\\p{Cc}\\u00AD\\u061C\\u180E\\u200B\\u200E\\u200F\\u2028-\\u202E\\u2060-\\u2064\\u2066-\\u206F\\uFEFF\\u{E0000}-\\u{E007F}";
+const UNSAFE = new RegExp(`[${INVISIBLE_OR_CONTROL}]+`, "gu");
+// For JSON text: JSON.stringify already escapes C0 controls inside strings, and its own newlines
+// are structure, so this class leaves U+0000-001F alone and escapes everything else above.
+const UNSAFE_IN_JSON = new RegExp(`[${INVISIBLE_OR_CONTROL.replace("\\p{Cc}", "\\u007F-\\u009F")}]`, "gu");
 const MAX_VALUE_CHARS = 200;
+const MAX_NOTICE_CHARS = 4000;
 export function safe(v, max = MAX_VALUE_CHARS) {
   const flat = String(v).replace(UNSAFE, " ").replace(/ {2,}/g, " ").trim();
   return flat.length > max ? `${flat.slice(0, max)}…` : flat;
+}
+
+/**
+ * JSON text in which every such character inside a string is written as a \\uXXXX escape.
+ * JSON.stringify leaves U+2028/2029, NEL, bidi and tag characters raw; escaping them is lossless
+ * (the JSON parses to the same value) and means no value can start a line or hide text.
+ */
+export function stringifyEscaped(value, space) {
+  return JSON.stringify(value, null, space).replace(UNSAFE_IN_JSON, (ch) =>
+    [...ch].flatMap((c) => { const u = c.codePointAt(0); return u > 0xffff ? [Math.floor((u - 0x10000) / 0x400) + 0xd800, ((u - 0x10000) % 0x400) + 0xdc00] : [u]; })
+      .map((u) => `\\u${u.toString(16).padStart(4, "0")}`).join(""));
 }
 /** A record value shown in quotes, so it reads as quoted data, never as the server's prose. */
 const quoted = (v) => JSON.stringify(safe(v));
 
 const strings = (v) => (Array.isArray(v) ? v.map((x) => (typeof x === "string" ? x : x?.source)).filter((x) => typeof x === "string" && x.trim()).map((x) => safe(x)) : []);
-const text = (v) => (typeof v === "string" && v.trim() ? safe(v, 600) : null);
+// Verifex's own notices are long by design (they name every list not consulted); never cut them.
+const text = (v) => (typeof v === "string" && v.trim() ? safe(v, MAX_NOTICE_CHARS) : null);
 const count = (v) => (typeof v === "number" && Number.isFinite(v) ? v : 0);
 
 /**

@@ -11,4 +11,5 @@ try {
   process.stderr.write(`verifex-mcp: ${err.message}\n`);
   process.exit(1);
 }
+if (config.customOrigin) process.stderr.write(`verifex-mcp: sending requests to ${config.baseUrl} (not the default https://api.verifex.dev)\n`);
 serveStdio(config);

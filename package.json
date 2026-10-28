@@ -8,7 +8,7 @@
   "exports": { ".": "./src/server.mjs", "./summary": "./src/summary.mjs" },
   "files": ["bin", "src", "README.md", "LICENSE"],
   "scripts": {
-    "test": "node --test tests/summary.test.mjs tests/server.test.mjs tests/security.test.mjs",
+    "test": "node --test tests/summary.test.mjs tests/server.test.mjs tests/security.test.mjs tests/security-invisible.test.mjs",
     "pack:mcpb": "node scripts/pack-mcpb.mjs"
   },
   "engines": { "node": ">=18.17.0" },

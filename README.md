@@ -84,7 +84,7 @@ settings (Cursor: `~/.cursor/mcp.json`).
 | Variable | Required | Meaning |
 |---|---|---|
 | `VERIFEX_API_KEY` | yes | Your secret Verifex API key. |
-| `VERIFEX_API_URL` | no | Default `https://api.verifex.dev`. Only `verifex.dev` hosts (and `http://localhost` for development) are accepted, because your key is sent there. |
+| `VERIFEX_API_URL` | no | Default `https://api.verifex.dev`. Only that host (and `http://localhost` for development) is accepted, because your key is sent there. Any other value prints a notice on start. |
 | `VERIFEX_ALLOW_CUSTOM_API_URL` | no | `1` allows a non-Verifex `VERIFEX_API_URL`, for example your own proxy. Leave unset otherwise. |
 | `VERIFEX_MCP_MAX_SCREENS_PER_10_MIN` | no | Screenings this server will make in any 10 minutes (default 20, at most 500). It stops a runaway assistant from spending your quota. |
 
@@ -112,8 +112,9 @@ until you choose to update. Releases are listed on the
   `https://api.verifex.dev`) and nowhere else. Redirects are never followed. The key is never written
   to the assistant, to stdout or to logs, and is removed from any result that might contain it.
 - **Results are data, not instructions.** Names, aliases and notes come from records, including names
-  your own systems screened earlier. The server cleans them: no control characters, no line breaks,
-  each one quoted and length-capped. It tells the assistant to treat everything after the status line
+  your own systems screened earlier. The server cleans them: no control, invisible or bidi characters
+  and no line breaks, each one quoted and length-capped, and the same characters are escaped in the
+  full JSON. It tells the assistant to treat everything after the status line
   as data. The status line itself is computed by the server.
 - **Approve screenings yourself.** Each `screen_name` call uses quota. Don't set your client to
   "always allow" it. The per-process limit above is a backstop, not a substitute.
